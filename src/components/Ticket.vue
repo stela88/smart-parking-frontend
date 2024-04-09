@@ -15,11 +15,11 @@
             <tr v-for = "ticket in tickets" v-bind:key="ticket.id">
                 <td>{{ticket.ticketId}}</td>
                 <td>{{ticket.registration}}</td>
-                <td>{{ticket.timeOfEnter}}</td>
-                <td>{{ticket.timeOfExit}}</td>
-                <td>{{ticket.exitTimeout}}</td>
-                <td>{{ticket.createdTs}}</td>
-                <td>{{ticket.modifiedTs}}</td>
+                <td>{{ticket.timeOfEnter | formatDate }}</td>
+                <td>{{ticket.timeOfExit | formatDate }}</td>
+                <td>{{ticket.exitTimeout | formatDate }}</td>
+                <td>{{ticket.createdTs | formatDate }}</td>
+                <td>{{ticket.modifiedTs | formatDate }}</td>
             </tr>
         </tbody>
     </table>
@@ -28,6 +28,15 @@
 
 <script>
 import TicketService from '../services/TicketService'
+import moment from 'moment';
+import Vue from 'vue'
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        const formattedTime = moment.utc(value).format('MM/DD/YYYY hh:mm A');
+        return formattedTime;
+    }
+});
 
 export default{
     name: "Tickets",

@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Input field for registration -->
     <div class="form-group">
-      <label for="registrationInput">Enter Registration:</label>
+      <label for="registrationInput">Enter Your Registration:</label>
       <input type="text" class="form-control" id="registrationInput" v-model="registration" @keyup.enter="getTicketByRegistration" placeholder="Enter registration">
     </div>
     <table class="table table-striped">
@@ -24,11 +24,11 @@
         <tr v-if="tickets">
         <td>{{ tickets.ticketId }}</td>
         <td>{{ tickets.registration }}</td>
-        <td>{{ tickets.timeOfEnter }}</td>
-        <td>{{ tickets.timeOfExit }}</td>
-        <td>{{ tickets.exitTimeout }}</td>
-        <td>{{ tickets.createdTs }}</td>
-        <td>{{ tickets.modifiedTs }}</td>
+        <td>{{ tickets.timeOfEnter | formatDate }}</td>
+        <td>{{ tickets.timeOfExit | formatDate }}</td>
+        <td>{{ tickets.exitTimeout | formatDate}}</td>
+        <td>{{ tickets.createdTs | formatDate }}</td>
+        <td>{{ tickets.modifiedTs | formatDate }}</td>
       </tr>
 
       </tbody>
@@ -38,6 +38,16 @@
 
 <script>
 import TicketService from '../services/TicketService';
+import moment from 'moment';
+import Vue from 'vue'
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        // Convert the time to the local timezone and format it
+        const formattedTime = moment.utc(value).format('MM/DD/YYYY hh:mm A');
+        return formattedTime;
+    }
+});
 
 export default {
   name: 'TicketByRegistration',
