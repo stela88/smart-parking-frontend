@@ -50,7 +50,7 @@ export default{
     filters: {
     formatDate(value) {
       if (value) {
-        return moment.utc(value).format('MM/DD/YYYY hh:mm A');
+        return moment.utc(new Date(value).toString()).format('MM/DD/YYYY hh:mm A');
       }
     }
   }

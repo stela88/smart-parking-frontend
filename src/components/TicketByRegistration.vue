@@ -2,7 +2,7 @@
   <div class="container">
     <div class="form-group">
       <label for="registrationInput">Enter Your Registration:</label>
-      <input type="text" class="form-control" id="registrationInput" v-model="registration" @keyup.enter="getTicketByRegistration" placeholder="Enter registration">
+      <input type="text" class="form-control" id="registrationInput" v-model="registration" @input="getTicketByRegistration" placeholder="Enter registration">
     </div>
     <table class="table table-striped">
       <thead>
@@ -32,7 +32,7 @@
       </tbody>
     </table>
     <div v-if="tickets">
-      <button @click="getReciep(ticketId)" class="btn btn-primary">Do you want to pay?</button>
+      <button @click="getReciep(ticketId)" class="btn btn-primary">Pay your receipt?</button>
     </div>
     <br>
     <br>
@@ -104,7 +104,7 @@ export default {
   filters: {
     formatDate(value) {
       if (value) {
-        return moment.utc(value).format('MM/DD/YYYY hh:mm A');
+        return moment.utc(new Date(value).toString()).format('MM/DD/YYYY hh:mm A');
       }
     }
   }
