@@ -29,14 +29,6 @@
 <script>
 import TicketService from '../services/TicketService'
 import moment from 'moment';
-import Vue from 'vue'
-
-Vue.filter('formatDate', function(value) {
-    if (value) {
-        const formattedTime = moment.utc(value).format('MM/DD/YYYY hh:mm A');
-        return formattedTime;
-    }
-});
 
 export default{
     name: "Tickets",
@@ -54,6 +46,13 @@ export default{
     },
     created(){
         this.getTickets()
+    },
+    filters: {
+    formatDate(value) {
+      if (value) {
+        return moment.utc(value).format('MM/DD/YYYY hh:mm A');
+      }
     }
+  }
 }
 </script>
