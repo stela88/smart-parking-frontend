@@ -54,6 +54,7 @@
           </tr>
         </tbody>
       </table>
+      <button @click="postTransaction" class="btn btn-primary">Pay</button>
     </div>
 
   </div>
@@ -61,6 +62,7 @@
 
 <script>
 import TicketService from '../services/TicketService';
+import TransactionService from '../services/TransactionService';
 import moment from 'moment';
 
 export default {
@@ -70,7 +72,8 @@ export default {
       tickets: [],
       registration: '',
       ticketId: '',
-      receipt: null 
+      receipt: null,
+      price: ''
     };
   },
   methods: {
@@ -80,13 +83,12 @@ export default {
           console.log(response.data); 
           this.tickets = response.data;
           this.ticketId = response.data.ticketId; 
-          // Reset receipt when new tickets are fetched
           this.receipt = null;
         })
         .catch((error) => {
           console.error("Error fetching tickets:", error);
           this.tickets = [];
-          this.receipt = null; // Reset receipt on error
+          this.receipt = null; 
         });
     },
     getReciep(ticketId) {
@@ -99,7 +101,29 @@ export default {
           console.error("Error fetching receipt:", error);
           this.receipt = null; 
         });
+    },
+    postTransaction() {
+    TransactionService.postTransaction({
+    amount: this.receipt.price,
+    createdTs: null, 
+    modifiedTs: null, 
+    ticket: {
+      ticketId: this.ticketId
     }
+    },
+    {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+  }
+    )
+    .then((response) => {
+      console.log("Transaction posted successfully:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error posting transaction:", error);
+    });
+}
   },
   filters: {
     formatDate(value) {
