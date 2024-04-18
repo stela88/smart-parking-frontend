@@ -31,7 +31,7 @@
         </tr>
       </tbody>
     </table>
-    <div v-if="tickets">
+    <div v-if="tickets.length !== 0">
       <button @click="getReciep(ticketId)" class="btn btn-primary">Pay your receipt?</button>
     </div>
     <br>
@@ -55,8 +55,13 @@
         </tbody>
       </table>
       <button @click="postTransaction" class="btn btn-primary">Pay</button>
+      <div v-if="popupMessage" class="popup">
+    <div class="popup-content">
+      <span class="close" @click="closePopup">&times;</span>
+      <p>{{ popupMessage }}</p>
     </div>
-
+  </div>
+    </div>
   </div>
 </template>
 
@@ -73,7 +78,8 @@ export default {
       registration: '',
       ticketId: '',
       receipt: null,
-      price: ''
+      price: '',
+      popupMessage: null 
     };
   },
   methods: {
@@ -86,7 +92,7 @@ export default {
           this.receipt = null;
         })
         .catch((error) => {
-          console.error("Error fetching tickets:", error);
+          console.error("Error fetching tickets:", error.response.data.message);
           this.tickets = [];
           this.receipt = null; 
         });
@@ -98,7 +104,7 @@ export default {
           this.receipt = response.data; 
         })
         .catch((error) => {
-          console.error("Error fetching receipt:", error);
+          console.error("Error fetching receipt:", error.response.data.message);
           this.receipt = null; 
         });
     },
@@ -119,11 +125,22 @@ export default {
     )
     .then((response) => {
       console.log("Transaction posted successfully:", response.data);
+      this.showPopup("Transaction posted successfully, You have 15 minutes to exit");
     })
     .catch((error) => {
-      console.error("Error posting transaction:", error);
+      console.error("Error posting transaction:", error.response.data.message);
+      this.showPopup("Error posting transaction: " + error.response.data.message);
     });
-}
+},
+showPopup(message) {
+      this.popupMessage = message; 
+      setTimeout(() => {
+        this.closePopup();
+      }, 3000); 
+    },
+    closePopup() {
+      this.popupMessage = null; 
+    }
   },
   filters: {
     formatDate(value) {
@@ -134,3 +151,26 @@ export default {
   }
 };
 </script>
+<style>
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(0, 0, 0); 
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 999; 
+}
+
+.popup-content {
+  color: white;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+</style>
