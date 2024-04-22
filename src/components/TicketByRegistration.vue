@@ -79,24 +79,36 @@ export default {
       ticketId: '',
       receipt: null,
       price: '',
-      popupMessage: null 
+      popupMessage: null,
+      refreshIntervalId: null 
     };
+  },
+  created() {
+    this.refreshTable();
+  },
+  destroyed() {
+    clearInterval(this.refreshIntervalId);
   },
   methods: {
     getTicketByRegistration() {
-      TicketService.getTicketByRegistration(this.registration)
-        .then((response) => {
-          console.log(response.data); 
-          this.tickets = response.data;
-          this.ticketId = response.data.ticketId; 
-          this.receipt = null;
-        })
-        .catch((error) => {
-          console.error("Error fetching tickets:", error.response.data.message);
-          this.tickets = [];
-          this.receipt = null; 
-        });
-    },
+  if (!this.registration) {
+    this.tickets = [];
+    this.receipt = null;
+    return;
+  }
+  TicketService.getTicketByRegistration(this.registration)
+    .then((response) => {
+      console.log(response.data); 
+      this.tickets = response.data;
+      this.ticketId = response.data.ticketId; 
+      this.receipt = null;
+    })
+    .catch((error) => {
+      console.error("Error fetching tickets:", error.response.data.message);
+      this.tickets = [];
+      this.receipt = null; 
+    });
+},
     getReciep(ticketId) {
       TicketService.getReciep(ticketId)
         .then((response) => {
@@ -109,30 +121,29 @@ export default {
         });
     },
     postTransaction() {
-    TransactionService.postTransaction({
-    amount: this.receipt.price,
-    createdTs: null, 
-    modifiedTs: null, 
-    ticket: {
-      ticketId: this.ticketId
-    }
+      TransactionService.postTransaction({
+        amount: this.receipt.price,
+        createdTs: null, 
+        modifiedTs: null, 
+        ticket: {
+          ticketId: this.ticketId
+        }
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((response) => {
+        console.log("Transaction posted successfully:", response.data);
+        this.showPopup("Transaction posted successfully, You have 15 minutes to exit");
+      })
+      .catch((error) => {
+        console.error("Error posting transaction:", error.response.data.message);
+        this.showPopup("Error posting transaction: " + error.response.data.message);
+      });
     },
-    {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-  }
-    )
-    .then((response) => {
-      console.log("Transaction posted successfully:", response.data);
-      this.showPopup("Transaction posted successfully, You have 15 minutes to exit");
-    })
-    .catch((error) => {
-      console.error("Error posting transaction:", error.response.data.message);
-      this.showPopup("Error posting transaction: " + error.response.data.message);
-    });
-},
-showPopup(message) {
+    showPopup(message) {
       this.popupMessage = message; 
       setTimeout(() => {
         this.closePopup();
@@ -140,6 +151,11 @@ showPopup(message) {
     },
     closePopup() {
       this.popupMessage = null; 
+    },
+    refreshTable() {
+      this.refreshIntervalId = setInterval(() => {
+        this.getTicketByRegistration();
+      }, 30000); 
     }
   },
   filters: {
@@ -151,6 +167,7 @@ showPopup(message) {
   }
 };
 </script>
+
 <style>
 .popup {
   position: fixed;
