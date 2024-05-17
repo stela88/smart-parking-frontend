@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const TRANSACTION_API_BASE_URL = 'http://localhost:8082/transactions';
+const TRANSACTION_API_BASE_URL = 'http://172.16.1.18:8083/api/transactions';
 
 class TransactionService {
   postTransaction(transactionData) {
