@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {BASE_API} from "./Constants";
 
-const TRANSACTION_API_BASE_URL = 'http://192.168.137.253:8083/api/transactions';
+const TRANSACTION_API_BASE_URL = `${BASE_API}/transactions`;
 
 class TransactionService {
   postTransaction(transactionData) {

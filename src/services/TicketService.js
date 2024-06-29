@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {BASE_API} from "./Constants";
 
-const TICKET_API_BASE_URL = 'http://192.168.137.253:8083/api/tickets';
-const TICKET_BY_REGISTRATION = 'http://192.168.137.253:8083/api/tickets/registration/';
+const TICKET_API_BASE_URL = `${BASE_API}/tickets`;
+const TICKET_BY_REGISTRATION = `${TICKET_API_BASE_URL}/registration`;
 
 
 class TicketService {
