@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: sgal88/frontend:4.0
+          image: sgal88/frontend:1.0
           ports:
             - containerPort: 8080
 
