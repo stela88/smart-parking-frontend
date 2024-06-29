@@ -11,7 +11,7 @@ class TicketService {
   }
 
   getTicketByRegistration(registration) {
-    return axios.get(`${TICKET_BY_REGISTRATION}${registration}`);
+    return axios.get(`${TICKET_BY_REGISTRATION}/${registration}`);
   }
 
   getReciep(id){
